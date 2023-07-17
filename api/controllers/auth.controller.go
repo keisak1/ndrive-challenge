@@ -23,13 +23,14 @@ func NewAuthController(authService services.AuthService, userService services.Us
 }
 
 func (ac *AuthController) SignUpUser(ctx *gin.Context) {
-	var user *models.SignUpInput
+	var user models.SignUpInput
 
 	// If requirements aren't met, then throw an error
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": err.Error()})
 		return
 	}
+	fmt.Println("user is", user)
 
 	// Confirm password
 	if user.Password != user.PasswordConfirm {
@@ -37,7 +38,7 @@ func (ac *AuthController) SignUpUser(ctx *gin.Context) {
 		return
 	}
 
-	newUser, err := ac.authService.SignUpUser(user)
+	newUser, err := ac.authService.SignUpUser(&user)
 
 	// Check if email already exists, or if there's any other error
 	if err != nil {

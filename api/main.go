@@ -20,18 +20,20 @@ import (
 
 // Create required variables that we'll re-assign later
 var (
-	userService         services.UserService
-	UserController      controllers.UserController
-	UserRouteController routes.UserRouteController
-	productCollection   *mongo.Collection
-	productService      services.ProductService
-	authCollection      *mongo.Collection
-	authService         services.AuthService
-	AuthController      controllers.AuthController
-	AuthRouteController routes.AuthRouteController
-	server              *gin.Engine
-	ctx                 context.Context
-	mongoclient         *mongo.Client
+	userService            services.UserService
+	UserController         controllers.UserController
+	UserRouteController    routes.UserRouteController
+	productCollection      *mongo.Collection
+	productService         services.ProductService
+	ProductController      controllers.ProductController
+	ProductRouteController routes.ProductRouteController
+	authCollection         *mongo.Collection
+	authService            services.AuthService
+	AuthController         controllers.AuthController
+	AuthRouteController    routes.AuthRouteController
+	server                 *gin.Engine
+	ctx                    context.Context
+	mongoclient            *mongo.Client
 )
 
 // Init function that will run before the "main" function
@@ -66,9 +68,11 @@ func init() {
 	productCollection = mongoclient.Database("golang_mongodb").Collection("products")
 	userService = services.NewUserServiceImpl(authCollection, ctx)
 	authService = services.NewAuthService(authCollection, ctx)
+	productService = services.NewProductService(productCollection, ctx)
+	ProductController = controllers.NewProductController(productService)
+	ProductRouteController = routes.NewRouteProductController(ProductController)
 	AuthController = controllers.NewAuthController(authService, userService)
 	AuthRouteController = routes.NewAuthRouteController(AuthController)
-	productService = services.NewProductService(productCollection, ctx)
 	UserController = controllers.NewUserController(userService)
 	UserRouteController = routes.NewRouteUserController(UserController)
 
@@ -92,5 +96,6 @@ func main() {
 
 	AuthRouteController.AuthRoute(router, userService)
 	UserRouteController.UserRoute(router, userService)
+	ProductRouteController.ProductRoute(router, productService)
 	log.Fatal(server.Run(":" + config.Port))
 }
