@@ -13,6 +13,7 @@ import (
 	"api/services"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -20,20 +21,24 @@ import (
 
 // Create required variables that we'll re-assign later
 var (
-	userService            services.UserService
-	UserController         controllers.UserController
-	UserRouteController    routes.UserRouteController
-	productCollection      *mongo.Collection
-	productService         services.ProductService
-	ProductController      controllers.ProductController
-	ProductRouteController routes.ProductRouteController
-	authCollection         *mongo.Collection
-	authService            services.AuthService
-	AuthController         controllers.AuthController
-	AuthRouteController    routes.AuthRouteController
-	server                 *gin.Engine
-	ctx                    context.Context
-	mongoclient            *mongo.Client
+	userService             services.UserService
+	UserController          controllers.UserController
+	UserRouteController     routes.UserRouteController
+	categoryCollection      *mongo.Collection
+	categoryService         services.CategoryService
+	CategoryController      controllers.CategoryController
+	CategoryRouteController routes.CategoryRouteController
+	productCollection       *mongo.Collection
+	productService          services.ProductService
+	ProductController       controllers.ProductController
+	ProductRouteController  routes.ProductRouteController
+	authCollection          *mongo.Collection
+	authService             services.AuthService
+	AuthController          controllers.AuthController
+	AuthRouteController     routes.AuthRouteController
+	server                  *gin.Engine
+	ctx                     context.Context
+	mongoclient             *mongo.Client
 )
 
 // Init function that will run before the "main" function
@@ -65,7 +70,11 @@ func init() {
 
 	// Collections
 	authCollection = mongoclient.Database("golang_mongodb").Collection("users")
-	productCollection = mongoclient.Database("golang_mongodb").Collection("products")
+	productCollection = mongoclient.Database("golang_mongodb").Collection("Products")
+	categoryCollection = mongoclient.Database("golang_mongodb").Collection("Categories")
+	categoryService = services.NewCategoryService(categoryCollection, ctx)
+	CategoryController = controllers.NewCategoryController(categoryService)
+	CategoryRouteController = routes.NewRouteCategoryController(CategoryController)
 	userService = services.NewUserServiceImpl(authCollection, ctx)
 	authService = services.NewAuthService(authCollection, ctx)
 	productService = services.NewProductService(productCollection, ctx)
@@ -76,6 +85,12 @@ func init() {
 	UserController = controllers.NewUserController(userService)
 	UserRouteController = routes.NewRouteUserController(UserController)
 
+	model := mongo.IndexModel{Keys: bson.D{{"Name", "text"}}}
+	name, err := mongoclient.Database("golang_mongodb").Collection("Products").Indexes().CreateOne(context.TODO(), model)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("Name of index created", name)
 	//  Create the Gin Engine instance
 	server = gin.Default()
 }
@@ -86,7 +101,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Could not load config", err)
 	}
-
 	defer mongoclient.Disconnect(ctx)
 
 	router := server.Group("/api")
@@ -97,5 +111,6 @@ func main() {
 	AuthRouteController.AuthRoute(router, userService)
 	UserRouteController.UserRoute(router, userService)
 	ProductRouteController.ProductRoute(router, productService)
+	CategoryRouteController.CategoryRoute(router, categoryService)
 	log.Fatal(server.Run(":" + config.Port))
 }

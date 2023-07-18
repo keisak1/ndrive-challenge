@@ -2,6 +2,8 @@ package services
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"api/models"
@@ -21,12 +23,9 @@ func NewProductService(collection *mongo.Collection, ctx context.Context) Produc
 }
 
 func (ps *ProductServiceImpl) AddProduct(product *models.ProductInsert) (*models.DBProductResponse, error) {
+
 	product.CreatedAt = time.Now()
 	product.UpdatedAt = product.CreatedAt
-	product.Name = product.Name
-	product.Stock = product.Stock
-	product.Rating = product.Rating
-	product.Image = product.Image
 
 	res, err := ps.collection.InsertOne(ps.ctx, &product)
 
@@ -54,6 +53,7 @@ func (ps *ProductServiceImpl) DeleteProduct(id string) (*mongo.DeleteResult, err
 		return nil, err
 	}
 	query := bson.M{"_id": objectID}
+
 	result, err := collection.DeleteOne(ps.ctx, query)
 
 	return result, err
@@ -61,6 +61,14 @@ func (ps *ProductServiceImpl) DeleteProduct(id string) (*mongo.DeleteResult, err
 
 func (ps *ProductServiceImpl) FindAll() ([]*models.Product, error) {
 	collection := ps.collection.Database().Collection("Products")
+
+	// TODO:Sorting by price (ASCENDING)
+	//filter := bson.D{}
+	// opts := options.Find().SetSort(bson.D{{"price", 1}})
+
+	// TODO:Sorting by price (DESCENDING)
+	//filter := bson.D{}
+	// opts := options.Find().SetSort(bson.D{{"price", -1}})
 	rows, err := collection.Find(context.Background(), bson.M{})
 	var products []*models.Product
 
@@ -82,4 +90,82 @@ func (ps *ProductServiceImpl) FindAll() ([]*models.Product, error) {
 
 	// Process the products or return them as needed
 	return products, nil
+}
+
+func (ps *ProductServiceImpl) FindOne(id string) (*models.Product, error) {
+	collection := ps.collection.Database().Collection("Products")
+	objectID, err := primitive.ObjectIDFromHex(id)
+	var product *models.Product
+	if err != nil {
+		return nil, err
+	}
+	query := bson.M{"_id": objectID}
+	collection.FindOne(ps.ctx, query).Decode(&product)
+	return product, nil
+}
+
+func (ps *ProductServiceImpl) EditProduct(product *models.ProductEdit) (*models.ProductEdit, error) {
+	collection := ps.collection.Database().Collection("Products")
+	objectID, err := primitive.ObjectIDFromHex(string(product.ID))
+	if err != nil {
+		return nil, err
+	}
+	query := bson.M{"_id": objectID}
+	var productEditing *models.Product
+	collection.FindOne(ps.ctx, query).Decode(&productEditing)
+	mergeProductFields(product, productEditing)
+	update := bson.D{{Key: "$set", Value: bson.D{{"Name", product.Name}, {"Price", product.Price}, {"Stock", product.Stock}, {"Image", product.Image}}}}
+	collection.UpdateOne(ps.ctx, query, update)
+	return product, nil
+}
+
+func mergeProductFields(product *models.ProductEdit, productEditing *models.Product) {
+	// Name
+	if product.Name == "" {
+		product.Name = productEditing.Name
+	}
+
+	// Price
+	if product.Price == 0 {
+		product.Price = productEditing.Price
+	}
+
+	// Stock
+	if product.Stock == 0 {
+		product.Stock = productEditing.Stock
+	}
+
+	// Image
+	if product.Image == "" {
+		product.Image = productEditing.Image
+	}
+	if product.Rating == 0 {
+		product.Rating = productEditing.Rating
+	}
+}
+
+func (ps *ProductServiceImpl) SearchProduct(search string) ([]*models.Product, error) {
+
+	fmt.Println(search)
+	collection := ps.collection.Database().Collection("Products")
+
+	filter := bson.D{{"$text", bson.D{{"$search", search}}}}
+	cursor, err := collection.Find(ps.ctx, filter)
+
+	if err != nil {
+		return nil, err
+	}
+	var results []*models.Product
+
+	if err = cursor.All(ps.ctx, &results); err != nil {
+		return nil, err
+	}
+
+	for _, result := range results {
+		res, _ := json.Marshal(result)
+		fmt.Println(string(res))
+	}
+
+	return results, nil
+
 }
