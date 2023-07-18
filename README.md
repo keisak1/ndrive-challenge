@@ -17,9 +17,11 @@
    
 - Install the Golang viper package
   ```shell
-  go get github.com/spf13/viper```
+  go get github.com/spf13/viper
+  ```
 
 - Run the command below to install the MongoDB Go driver and Gin Gonic packages.
   ```shell
-  go get go.mongodb.org/mongo-driver/mongo github.com/gin-gonic/gin```
+  go get go.mongodb.org/mongo-driver/mongo github.com/gin-gonic/gin
+  ```
 
