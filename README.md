@@ -25,3 +25,35 @@
   go get go.mongodb.org/mongo-driver/mongo github.com/gin-gonic/gin
   ```
 
+
+## API Endpoints
+
+ ### Auth GET Requests
+  **Refresh token**
+
+|          Name | Required |  Type   | Description                                                                                                                                                           |
+| -------------:|:--------:|:-------:| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|     `none` |             |         | Refresh your access token.                                                                    |
+
+ **Response**
+
+ ```json
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk3MDEwNTAsImlhdCI6MTY4OTcwMDE1MCwibmJmIjoxNjg5NzAwMTUwLCJzdWIiOiI2NGI1NTgwMWU0MGUyMTJiNzI4ODY3ZTcifQ.0dGiTh16sPWgmcC50NbQPzemP9V2xEXppH65eVh0yFeZbL9ry3rxNMplYgfjv5d5J2W5uQxHPiY7GBWc6YIyog",
+  "status": "success"
+}
+```
+**Login**
+|          Name | Required |  Type   | Description                                                                                                                                                           |
+| -------------:|:--------:|:-------:| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|     `email` |    required      |    string     | The email address linked to a registered account.                                                                    |
+|     `password` |    required      |    string     | A valid password to login                                                                    |
+
+ **Response**
+```json
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk3MDEwMjYsImlhdCI6MTY4OTcwMDEyNiwibmJmIjoxNjg5NzAwMTI2LCJzdWIiOiI2NGI1NTgwMWU0MGUyMTJiNzI4ODY3ZTcifQ.eV8ngCjVtF1jcyPMleAILmOsithnsBwrJtVdMTx873z-Lir098pg0PzeBgEWod7N74hbvZWcmcOzsiYaSqVghQ",
+  "status": "success"
+}
+```
+
