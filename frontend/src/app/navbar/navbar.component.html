@@ -1,0 +1,46 @@
+<div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand ml-2" routerLink="/home" data-abc="true">NDrive Challenge</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-center text-center" id="navbarColor02">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" routerLink="/home" data-abc="true">Home</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Categories
+            </a>
+            <div class="dropdown-menu" aria-labelledby="categoriesDropdown">
+              <a class="dropdown-item" href="#">Category 1</a>
+              <a class="dropdown-item" href="#">Category 2</a>
+              <a class="dropdown-item" href="#">Category 3</a>
+              <!-- Add more dropdown items as needed -->
+            </div>
+          </li>
+        </ul>
+        <form onsubmit="event.preventDefault()" class="form-inline my-2 my-lg-0">
+          <div class="d-flex">
+            <div *ngIf="menuType === 'default'" class="mr-2">
+              <a class="navbar-text" routerLink="/auth/login" data-abc="true">Login</a>
+            </div>
+            <div *ngIf="menuType === 'default'">
+              <a class="navbar-text" routerLink="/auth/register" data-abc="true">Register</a>
+            </div>
+          </div>
+          <div *ngIf="menuType === 'user'">
+            <div class="input-group">
+              <input class="form-control rounded-pill" type="text" placeholder="Search Products" />
+              <div class="input-group-append">
+                <button class="btn btn-primary rounded-pill">Search</button>
+              </div>
+              <a class="navbar-text ml-2" routerLink="/auth/login" data-abc="true" (click)="logout()">Logout</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </nav>
+  </div>
+  

@@ -5,13 +5,13 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 
 	"api/config"
 	"api/controllers"
 	"api/routes"
 	"api/services"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -102,11 +102,11 @@ func main() {
 		log.Fatal("Could not load config", err)
 	}
 	defer mongoclient.Disconnect(ctx)
-
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowCredentials = true
+	corsConfig.AllowOrigins = []string{"http://localhost:4200"}
+	server.Use(cors.New(corsConfig))
 	router := server.Group("/api")
-	router.GET("/healthchecker", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"status": "success", "message": "Connected to MongoDB"})
-	})
 
 	AuthRouteController.AuthRoute(router, userService)
 	UserRouteController.UserRoute(router, userService)

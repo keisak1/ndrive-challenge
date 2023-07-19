@@ -1,0 +1,16 @@
+body{background-color:grey}
+.form-control.rounded-pill {
+    border-radius: 50px; /* You can adjust the value to increase or decrease roundness */
+  }
+  
+  .btn.rounded-pill {
+    border-radius: 50px; /* You can adjust the value to increase or decrease roundness */
+  }
+
+  .navbar-brand {
+    padding-left: 20px;
+  }
+  
+  .navbar-text {
+    padding-left: 10px;
+  }
