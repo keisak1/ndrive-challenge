@@ -14,6 +14,8 @@
    REFRESH_TOKEN_PUBLIC_KEY=
    REFRESH_TOKEN_EXPIRED_IN=60
    REFRESH_TOKEN_MAXAGE=60```
+
+   I recommend using PORT 8000
    
 - Install the Golang viper package
   ```shell
