@@ -85,7 +85,7 @@ func init() {
 	UserController = controllers.NewUserController(userService)
 	UserRouteController = routes.NewRouteUserController(UserController)
 
-	model := mongo.IndexModel{Keys: bson.D{{"Name", "text"}}}
+	model := mongo.IndexModel{Keys: bson.D{{"name", "text"}}}
 	name, err := mongoclient.Database("golang_mongodb").Collection("Products").Indexes().CreateOne(context.TODO(), model)
 	if err != nil {
 		fmt.Println(err)

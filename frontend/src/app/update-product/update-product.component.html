@@ -1,0 +1,50 @@
+<app-navbar></app-navbar>
+<div class="formbold-main-wrapper">
+    <!-- Author: FormBold Team -->
+    <!-- Learn More: https://formbold.com -->
+    <div class="formbold-form-wrapper">
+        <form #updateProduct="ngForm" (ngSubmit)="submitUpdate(updateProduct.value)">
+            <div class="formbold-input-flex">
+                <div>
+                    <input type="hidden" name="id" id="id" ngModel="{{product.id}}"/>
+                    <input type="text" name="name" id="name" placeholder="Name" class="formbold-form-input" ngModel="{{product.name}}" />
+                    <label for="firstname" class="formbold-form-label"> Product Name </label>
+                </div>
+                <div>
+                    <input type="number" name="price" id="price" min="1" placeholder="Price" class="formbold-form-input"
+                        ngModel="{{product.price}}" />
+                    <label for="Price" class="formbold-form-label"> Price </label>
+                </div>
+            </div>
+            <div class="formbold-input-flex">
+                <div>
+                    <input type="number" name="stock" id="stock" placeholder="Stock" class="formbold-form-input"
+                        ngModel="{{product.stock}}" />
+                    <label for="email" class="formbold-form-label"> Stock </label>
+                </div>
+                <div>
+                    <input type="number" min="1" max="5" name="rating" id="rating" placeholder="Rating"
+                        class="formbold-form-input" ngModel="{{product.rating}}" />
+                    <label for="phone" class="formbold-form-label"> Rating </label>
+                </div>
+            </div>
+
+            <label for="phone" class="formbold-form-label">Choose one or multiple Categories:</label>
+
+            <select name="categoryId" id="category" multiple ngModel="{{product.categoryId}}">
+                <option *ngFor="let category of categoryList" value="{{category.id}}">{{ category.name }}</option>
+            </select>
+
+            <div class="formbold-input-file">
+                <div>
+                    <input type="text" name="image" id="image" placeholder="Image URL" class="formbold-form-input"
+                        ngModel="{{product.image}}" />
+                    <label for="phone" class="formbold-form-label"> Image URL</label>
+                </div>
+            </div>
+            <button class="formbold-btn">
+                Update Product
+            </button>
+        </form>
+    </div>
+</div>

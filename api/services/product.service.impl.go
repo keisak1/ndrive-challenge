@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -149,7 +148,12 @@ func (ps *ProductServiceImpl) SearchProduct(search string) ([]*models.Product, e
 	fmt.Println(search)
 	collection := ps.collection.Database().Collection("Products")
 
-	filter := bson.D{{"$text", bson.D{{"$search", search}}}}
+	filter := bson.M{"name": bson.M{
+		"$regex": primitive.Regex{
+			Pattern: search,
+			Options: "i",
+		},
+	}}
 	cursor, err := collection.Find(ps.ctx, filter)
 
 	if err != nil {
@@ -157,13 +161,11 @@ func (ps *ProductServiceImpl) SearchProduct(search string) ([]*models.Product, e
 	}
 	var results []*models.Product
 
-	if err = cursor.All(ps.ctx, &results); err != nil {
-		return nil, err
-	}
-
-	for _, result := range results {
-		res, _ := json.Marshal(result)
-		fmt.Println(string(res))
+	for cursor.Next(ps.ctx) {
+		var result *models.Product
+		cursor.Decode(&result)
+		fmt.Println(result)
+		results = append(results, result)
 	}
 
 	return results, nil

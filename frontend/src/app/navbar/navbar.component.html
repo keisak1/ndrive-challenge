@@ -6,6 +6,8 @@
       </button>
       <div class="collapse navbar-collapse justify-content-center text-center" id="navbarColor02">
         <ul class="navbar-nav mr-auto">
+          <a class="nav-link" routerLink="/add-product" data-abc="true">Add Product</a>
+
           <li class="nav-item active">
             <a class="nav-link" routerLink="/home" data-abc="true">Home</a>
           </li>
@@ -21,7 +23,8 @@
             </div>
           </li>
         </ul>
-        <form onsubmit="event.preventDefault()" class="form-inline my-2 my-lg-0">
+
+        <form  #searchProduct="ngForm" (ngSubmit)="search(searchProduct.value)" class="form-inline my-2 my-lg-0">
           <div class="d-flex">
             <div *ngIf="menuType === 'default'" class="mr-2">
               <a class="navbar-text" routerLink="/auth/login" data-abc="true">Login</a>
@@ -32,9 +35,9 @@
           </div>
           <div *ngIf="menuType === 'user'">
             <div class="input-group">
-              <input class="form-control rounded-pill" type="text" placeholder="Search Products" />
+              <input class="form-control rounded-pill" type="text" name="search" placeholder="Search Products" ngModel/>
               <div class="input-group-append">
-                <button class="btn btn-primary rounded-pill">Search</button>
+                <button class="btn btn-primary rounded-pill" routerLink="/search/{{searchProduct.value.search}}">Search</button>
               </div>
               <a class="navbar-text ml-2" routerLink="/auth/login" data-abc="true" (click)="logout()">Logout</a>
             </div>

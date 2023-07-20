@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from '../register/user.service';
+import { UserService } from '../services/user.service';
+import { ProductService } from '../services/product.service';
+import { product } from '../data-type';
 
 @Component({
   selector: 'app-navbar',
@@ -8,8 +10,9 @@ import { UserService } from '../register/user.service';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit{
+  productList:product[] = [];
   menuType:String = 'default'
-  constructor(private userService:UserService) {
+  constructor(private userService:UserService, private productService:ProductService) {
     
   }
 ngOnInit(): void {
@@ -22,4 +25,11 @@ ngOnInit(): void {
 logout(){
   this.userService.userLogout()
 } 
+
+search(data:string){
+  console.warn(data)
+  this.productService.searchProduct(data).subscribe((res)=>{
+    this.productList = res
+  })
+}
 }

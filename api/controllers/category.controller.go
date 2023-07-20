@@ -43,6 +43,6 @@ func (cc *CategoryController) FindAll(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusFound, gin.H{"status": "success", "data": gin.H{"categories": categories}})
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"categories": categories}})
 
 }

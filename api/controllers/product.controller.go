@@ -24,8 +24,9 @@ func (pc *ProductController) AddProduct(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": err.Error()})
 		return
 	}
+	var newProduct = models.NewProduct(product.Name, product.Price, product.Stock, product.Rating, product.CategoryID, product.Image, product.CreatedAt, product.UpdatedAt)
 
-	result, err := pc.productService.AddProduct(product)
+	result, err := pc.productService.AddProduct(newProduct)
 
 	if err != nil {
 		ctx.JSON(http.StatusConflict, gin.H{"status": "error", "message": err.Error()})
@@ -44,7 +45,7 @@ func (pc *ProductController) FindAll(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusFound, gin.H{"status": "success", "data": gin.H{"products": products}})
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"products": products}})
 
 }
 func (pc *ProductController) Delete(ctx *gin.Context) {
@@ -71,7 +72,7 @@ func (pc *ProductController) FindOne(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusFound, gin.H{"status": "success", "data": gin.H{"result": result}})
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"result": result}})
 
 }
 
@@ -92,19 +93,19 @@ func (pc *ProductController) EditProduct(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusFound, gin.H{"status": "success", "data": gin.H{"result": result}})
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"result": result}})
 }
 
 func (pc *ProductController) SearchProduct(ctx *gin.Context) {
 	search := ctx.Query("search")
+	fmt.Println(search)
 
 	result, err := pc.productService.SearchProduct(search)
-	fmt.Println(result)
 
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"status": "No products found", "message": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusFound, gin.H{"status": "success", "data": gin.H{"result": result}})
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"result": result}})
 }

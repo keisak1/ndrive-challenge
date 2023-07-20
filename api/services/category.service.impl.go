@@ -42,7 +42,7 @@ func (ps *CategoryServiceImpl) CreateCategory(category *models.Category) (*model
 }
 
 func (ps *CategoryServiceImpl) FindAll() ([]*models.Category, error) {
-	collection := ps.collection.Database().Collection("Category")
+	collection := ps.collection.Database().Collection("Categories")
 	rows, err := collection.Find(context.Background(), bson.M{})
 	var categories []*models.Category
 

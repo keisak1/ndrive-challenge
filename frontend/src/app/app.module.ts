@@ -8,6 +8,11 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { AddProductComponent } from './add-product/add-product.component';
+import { UpdateProductComponent } from './update-product/update-product.component';
+import { ProductPageComponent } from './product-page/product-page.component';
+import { FooterComponent } from './footer/footer.component';
+import { SearchPageComponent } from './search-page/search-page.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +20,12 @@ import { NavbarComponent } from './navbar/navbar.component';
     LoginComponent,
     RegisterComponent,
     HomeComponent,
-    NavbarComponent
+    NavbarComponent,
+    AddProductComponent,
+    UpdateProductComponent,
+    ProductPageComponent,
+    FooterComponent,
+    SearchPageComponent
   ],
   imports: [
     BrowserModule,
